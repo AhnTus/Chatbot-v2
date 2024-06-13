@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:1.23.3-alpine
+    ports:
+      - '8090:80'
+    volumes:
+      - ./nginx_reverse_proxy/default_rp.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - chatgpt-network
+  frontend:
+    build:
+      context: ./chatgpt_frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+    networks:
+      - chatgpt-network
+
+  backend:
+    build:
+      context: ./chatgpt_backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file:
+      - .envs/.env
+    command: >
+      bash -c "python manage.py create_superuser &&
+               python manage.py makemigrations &&
+               python manage.py migrate &&
+               python manage.py collectstatic --noinput --clear --verbosity 0 &&
+               gunicorn --bind 0.0.0.0:8090 chatgpt_backend.wsgi:application"
+    networks:
+      - chatgpt-network
+
+  db:
+    image: postgres:13.6
+    env_file:
+      - .envs/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - chatgpt-network
+
+networks:
+  chatgpt-network:
+    driver: bridge
+
+volumes:
+  postgres:
