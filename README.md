@@ -1,5 +1,5 @@
 # 🤖 Self Hosted ChatGPT 
-ChatGPT Clone: Self Hosted, Full-Stack Conversational AI Platform powered by React, Django REST Framework, and PostgreSQL and OpenAI's GPT-3.5 API.
+Development based on https://github.com/AhnTus/Chatbot-v1 : Self Hosted, Full-Stack Conversational AI Platform powered by React, Django REST Framework, and PostgreSQL and OpenAI's GPT-3.5 API.
 ## 🙌 Credits
 
 - [OpenAI GPT-3.5](https://platform.openai.com/docs/models/gpt-3)
